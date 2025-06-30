@@ -62,5 +62,8 @@ avg_cpa = total_cost / total_conversions if total_conversions > 0 else 0
 
 st.write(f"**Total Cost:** ${total_cost:.2f}")
 st.write(f"**Total Conversions:** {total_conversions}")
-st.write(f"**Average CTR:** {avg_ctr:.2%}")
+if pd.isna(avg_ctr):
+    st.write("**Average CTR:** No data available")
+else:
+    st.write(f"**Average CTR:** {avg_ctr:.2%}")
 st.write(f"**Average CPA:** ${avg_cpa:.2f}")
