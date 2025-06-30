@@ -56,6 +56,7 @@ st.plotly_chart(fig_cpa)
 st.subheader(" Summary Metrics")
 total_cost = filtered_df['cost'].sum()
 total_conversions = filtered_df['conversions'].sum()
+filtered_df['CTR'] = pd.to_numeric(filtered_df['CTR'], errors='coerce')
 avg_ctr = filtered_df['CTR'].mean()
 avg_cpa = total_cost / total_conversions if total_conversions > 0 else 0
 
