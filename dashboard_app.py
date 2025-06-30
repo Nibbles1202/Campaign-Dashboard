@@ -1,14 +1,13 @@
 import streamlit as st 
 import pandas as pd 
 import plotly.express as px 
+from datetime import datetime
 
 df = pd.read_csv('data/campaign_metrics.csv')
 
+# Keep CTR and CPA as numeric
 df['CTR'] = df['clicks'] / df['impressions']
 df['CPA'] = df['cost'] / df['conversions']
-
-df['CTR'] = df['CTR'].apply(lambda x: f"{x:.2%}")
-df['CPA'] = df['CPA'].apply(lambda x: f"${x:,.2f}")
 
 st.sidebar.header("Filter the data")
 channels = st.sidebar.multiselect(
@@ -16,8 +15,6 @@ channels = st.sidebar.multiselect(
     options=df['channel'].unique(),
     default=df['channel'].unique()
 )
-
-from datetime import datetime
 
 dates = sorted([
     datetime.strptime(date_str, "%Y-%m-%d").date()
@@ -32,7 +29,6 @@ date_range = st.sidebar.slider(
 )
 
 df['campaign_date'] = pd.to_datetime(df['campaign_date'])
-
 date_range = (pd.Timestamp(date_range[0]), pd.Timestamp(date_range[1]))
 
 filtered_df = df[
@@ -43,7 +39,12 @@ filtered_df = df[
 
 st.title(" Marketing Campaign Performance Dashboard")
 
-st.dataframe(filtered_df)
+# Format numeric values for display in dataframe
+df_display = filtered_df.copy()
+df_display['CTR'] = df_display['CTR'].apply(lambda x: f"{x:.2%}")
+df_display['CPA'] = df_display['CPA'].apply(lambda x: f"${x:,.2f}")
+
+st.dataframe(df_display)
 
 st.subheader("CTR Over Time by Channel")
 fig_ctr = px.line(filtered_df, x='campaign_date', y='CTR', color='channel')
@@ -56,7 +57,6 @@ st.plotly_chart(fig_cpa)
 st.subheader(" Summary Metrics")
 total_cost = filtered_df['cost'].sum()
 total_conversions = filtered_df['conversions'].sum()
-filtered_df['CTR'] = pd.to_numeric(filtered_df['CTR'], errors='coerce')
 avg_ctr = filtered_df['CTR'].mean()
 avg_cpa = total_cost / total_conversions if total_conversions > 0 else 0
 
@@ -67,3 +67,4 @@ if pd.isna(avg_ctr):
 else:
     st.write(f"**Average CTR:** {avg_ctr:.2%}")
 st.write(f"**Average CPA:** ${avg_cpa:.2f}")
+
