@@ -1,0 +1,5 @@
+campaign_id,channel,campaign_date,impressions,clicks,conversions,cost
+1,Facebook,2025-06-01,10000,500,50,200
+1,Google,2025-06-01,8000,400,45,180
+1,Facebook,2025-06-02,11000,520,55,210
+1,Google,2025-06-02,9000,450,48,190
